@@ -14,6 +14,7 @@
 #include "State.h"
 #include "GameState.h"
 #include "MenuState.h"
+#include"CircleButton.h"
 
 
 
@@ -21,34 +22,41 @@
 class GameManager
 {
 
-
+	//window
 	sf::RenderWindow* window;   // this is a poniter, cause we want to delete this anytime
 	sf::VideoMode videoMode;
 	sf::Event event;
 
-	Button* gameStatebutton;
 
+	//font
 	sf::Font font;
+
+	//if endGame
 	bool endGame;
 
 	sf::Vector2i mousePos;
-
-
+    
+	// Game states
 	std::stack<State*>states;
 
+	//inits
 	void initVariables();
 	void initWindow();
 	void initFonts();
+
+	void pullEvents();
+	
 
 public:
 
 	const bool running() const;
 	const bool getEndGame() const;
+
+
 	GameManager();
 	~GameManager();
 
-
-
+	bool mouseButtonReleased();
 
 	void update();
 	void render();

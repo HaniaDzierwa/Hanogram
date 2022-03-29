@@ -16,18 +16,23 @@
 class State {
 
 protected:
+public:
 
 	sf::Text text;
 	sf::Font font;
 
-public:
+
+
 	void initFonts();
 	void initText();
 
 	State();
-	~State();
+	virtual ~State() = 0;
 	virtual void update() = 0;
 	virtual void render(sf::RenderTarget* target) = 0;
+
+
+	virtual bool endGameState() = 0;
 
 
 };

@@ -3,7 +3,7 @@
 
 void State::initFonts()
 {
-    if (!this->font.loadFromFile("Fonts/BubbleShine.ttf"))
+    if (!this->font.loadFromFile("Fonts/JosefinSans-Bold.ttf"))
     {
         std::cout << "ERROR::GAME::INITFONTS::failed to load font!" << "\n";
     }
@@ -26,6 +26,8 @@ State::State()
     initText();
 }
 
-State::~State()
+
+ State::~State()
 {
+
 }
