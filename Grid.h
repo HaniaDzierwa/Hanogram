@@ -1,24 +1,28 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/Audio.hpp>
-#include <SFML/Network.hpp>
 
 #include <vector>
 #include "Tile.h"
+#include "TileClicked.h"
+#include "TileNumber.h"
+#include <iostream>
 
 using namespace std;
 class Grid
 {
-	vector<vector<Tile*>> tiles; 
+	vector<vector<Tile*>> tilesClicked; 
+	vector<vector<Tile*>> tilesNumber;
 
 	sf::Vector2f gridOffSet;
 	int size;
+
+	int tileSize;
+	int maxNumbers; // max amount of numbers to fill np 1 2 4 3  to bedzie ilosc 4 
 	
 	sf::RectangleShape coastlineHorizontal;
 	sf::RectangleShape coastlineVertical;
+
+	sf::RectangleShape coastlineHorizontalup;
+	sf::RectangleShape coastlineVerticalSide;
 	float thicknesCoastline;
 
 	int boxSize;
@@ -26,7 +30,8 @@ class Grid
 	void initTiles();
 	void initLines();
 public: 
-	Grid(int size , sf::RenderWindow* window);
+
+	Grid(int size,sf::RenderWindow* window);
 	~Grid();
 
 	//update
@@ -36,7 +41,8 @@ public:
 
 	//render
 	void renderLines(sf::RenderTarget* target);
-	void renderTiles(sf::RenderTarget* target);
+	void renderTilesClicked(sf::RenderTarget* target);
+	void renderTilesNumbers(sf::RenderTarget* target);
 	void render(sf::RenderTarget* target);
 
 

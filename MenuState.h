@@ -1,15 +1,11 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/Audio.hpp>
-#include <SFML/Network.hpp>
+
 #include "State.h"
-#include "GameManager.h"
+#include "GameState.h"
 #include "CircleButton.h"
 #include "RectangleButton.h"
-#include  "GameState.h"
+#include <unordered_map>
 
 //enum Level { Easy="esay", Medium, Hard };
 
@@ -21,27 +17,29 @@ class MenuState : public State
 	RectangleButton* level;
 	RectangleButton* title;
 
-	
-
-	//window
-	int windowHeight;
-	int windowWidth;
-	sf::Vector2i windowPossition;
-	sf::RenderWindow* window;
-	bool mouseHeld;
-
 	//states
 	std::stack<State*>* states;
 
 
 	//level
-	std::map<std::string, int> levelANDsize;
-	std::map<std::string, int>::iterator it;
+	std::unordered_map<std::string, int> levelANDsize; 
+	std::unordered_map<std::string, int>::iterator it;
+	int toReturn;
 	
 	sf::Event event;
+
+	int gridSize;
 	
 	bool endGameState();
-	void updateLevel();
+	int updateLevel();
+
+	void initButtons();
+	void initLevel();
+
+	//clock
+	sf::Clock clock;
+	sf::Time time = sf::seconds(0.3);
+	
 
 public:	
 	

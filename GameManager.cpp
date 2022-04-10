@@ -10,16 +10,10 @@ void GameManager::initWindow()
     this->videoMode.width = 800;
     this->window = new sf::RenderWindow(this->videoMode, "Hanogram", sf::Style::Titlebar | sf::Style::Close); // widht and hight 
     this->window->setFramerateLimit(60);
+    this->window->setKeyRepeatEnabled(false);
 }
 
-void GameManager::initFonts()
-{
-    // nic nie robi 
-    if (!this->font.loadFromFile("Fonts/Walkway_UltraBold.ttf"))
-    {
-        std::cout << "ERROR::GAME::INITFONTS::failed to load font!" << "\n";
-    }
-}
+
 
 void GameManager::pullEvents()
 {
@@ -30,14 +24,6 @@ void GameManager::pullEvents()
     }
 }
 
-bool GameManager::mouseButtonReleased()
-{
-    if (this->event.type == sf::Event::MouseButtonReleased)
-        if (event.mouseButton.button == sf::Mouse::Left)
-            return true;
-
-
-}
 const bool GameManager::running() const
 {
     return this->window->isOpen();
@@ -49,16 +35,13 @@ const bool GameManager::getEndGame() const
 }
 GameManager::GameManager()
 {
-    initFonts();
+    
     initVariables();
     initWindow();
-
     states.push(new MenuState(this->window, &states, event));
 }
 GameManager::~GameManager()
 {
-   
-
     for (int i = 0; i < this->states.size(); i++)
     {
         State* toDelete = this->states.top();
@@ -74,7 +57,7 @@ GameManager::~GameManager()
 void GameManager::update()
 {
    
-    this->pullEvents();
+   this->pullEvents();
    this->states.top()->update();
 
     if (this->states.top()->endGameState())
@@ -82,9 +65,6 @@ void GameManager::update()
         delete states.top();
         this->states.pop();
     }
-
-
-    
 }
 
 

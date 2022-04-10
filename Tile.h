@@ -1,40 +1,25 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
-
-
-#include "TileData.h"
-
-
+#include "AllTileData.h"
 
 class Tile
 {
+
+protected:
 	
 	sf::Vector2f position;
 	sf::RectangleShape shape;
-
 	int size;
-	 sf::Color defaultColor= sf::Color::White;
-	 sf::Color blackColor = sf::Color::Black;
 
+	sf::Color emptyColorTile;
+	sf::Color outlineColor;
+	float thicknesEdge;
 
-	//to bedzie X xd 
-	/*sf::Vertex line[2] =
-	{
-		sf::Vertex(sf::Vector2f(10, 10)),
-		sf::Vertex(sf::Vector2f(150, 150))
-	};*/
-
-	sf::Color endStateColor;
-
-
-
+	
 public:
-	Tile(sf::Vector2f position,sf::Color endStateColor);
+	Tile(sf::Vector2f position,int size);
 	~Tile();
 
-	void update(const sf::Vector2f mousePos);
-	void render(sf::RenderTarget* target);
-
+	virtual void render(sf::RenderTarget* target)= 0 ;
+	
 };

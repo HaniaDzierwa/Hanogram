@@ -1,10 +1,6 @@
 #pragma once
 
 #include "RectangleButton.h"
-#include "Button.h"
-
-
-
 
 RectangleButton::RectangleButton(float x, float y, float width, float height, float rotation ,sf::Font* font, std::string text, sf::Color unactiveColor, sf::Color hoverColor, sf::Color activeColor)
 	: Button(x, y, rotation, font, text, unactiveColor, hoverColor, activeColor)
@@ -13,15 +9,18 @@ RectangleButton::RectangleButton(float x, float y, float width, float height, fl
 	this->shape.setPosition(x, y);
 	this->shape.setSize(sf::Vector2f(width, height));
 
-
 	this->text.setPosition(
 		this->shape.getPosition().x + (this->shape.getGlobalBounds().width / 2.f) - this->text.getGlobalBounds().width / 2.f,
 		this->shape.getPosition().y + (this->shape.getGlobalBounds().height / 2.f) - this->text.getGlobalBounds().height / 1.f),
 		this->shape.setFillColor(this->unactiveColor);
 
 	this->shape.setFillColor(this->unactiveColor);
-	
 	 this->shape.rotate(rotation);
+}
+
+sf::RectangleShape RectangleButton::getShape()
+{
+	return this->shape;
 }
 
 RectangleButton::~RectangleButton()
@@ -58,7 +57,7 @@ void RectangleButton::update(const sf::Vector2f mousePos)
 	if (this->shape.getGlobalBounds().contains(mousePos))
 	{
 		this->buttonState = hover;
-		
+		//clicked
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
 			this->buttonState = active;

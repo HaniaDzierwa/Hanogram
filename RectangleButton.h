@@ -4,9 +4,10 @@
 
 class RectangleButton : public Button
 {
+	sf::RectangleShape shape;
 
 public:
-	sf::RectangleShape shape;
+	
 
 
 	 sf::Texture texture;
@@ -15,6 +16,7 @@ public:
 	RectangleButton(float x, float y, float width, float height, float rotation, sf::Font* font, std::string text,
 		sf::Color unactiveColor, sf::Color hoverColor, sf::Color activeColor);
 
+	sf::RectangleShape getShape();
 	~RectangleButton();
 
 	void setSprite(std::string name);

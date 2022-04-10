@@ -1,5 +1,5 @@
 #include "CircleButton.h"
-#include "State.h"
+
 
 CircleButton::CircleButton(float x, float y, float radius, float rotation,sf::Font* font, std::string text, sf::Color unactiveColor, sf::Color hoverColor, sf::Color activeColor)
 	: Button(x, y, rotation, font, text, unactiveColor, hoverColor, activeColor)
@@ -23,6 +23,11 @@ CircleButton::~CircleButton()
 }
 
 
+sf::CircleShape CircleButton::getShape()
+{
+	return  this->shape;
+}
+
 void CircleButton::update(const sf::Vector2f mousePos)
 {
 	this->buttonState = unactive;
@@ -30,6 +35,7 @@ void CircleButton::update(const sf::Vector2f mousePos)
 	if (this->shape.getGlobalBounds().contains(mousePos))
 	{
 		this->buttonState = hover;
+		//clicked
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
 			this->buttonState = active;

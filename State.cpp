@@ -20,10 +20,12 @@ void State::initText()
 
 }
 
-State::State()
+State::State(sf::RenderWindow *window, std::stack<State*>* states)
 {
     initFonts();
     initText();
+    this->window = window;
+    this->states = states;
 }
 
 

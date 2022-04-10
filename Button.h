@@ -1,9 +1,6 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
-
 #include <iostream>
 
 
@@ -15,10 +12,8 @@ protected:
 
 	short unsigned buttonState;
 	
-	
 	sf::Font* font;
 	sf::Text text;
-	
 
 	sf::Color unactiveColor;
 	sf::Color hoverColor;
@@ -33,8 +28,6 @@ public:
 		sf::Font* font, std::string text,
 		sf::Color unactiveColor, sf::Color hoverColor, sf::Color activeColor);
 
-
-	//Button();
 	virtual ~Button() = 0;
 
 	const bool isPressed() const;

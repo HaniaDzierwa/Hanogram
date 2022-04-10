@@ -1,20 +1,9 @@
 #pragma once
 
-
-#include <SFML/Graphics.hpp>
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/Audio.hpp>
-#include <SFML/Network.hpp>
-
 #include <iostream>
 #include <stack>
-#include "Button.h"
-#include "State.h"
-#include "GameState.h"
 #include "MenuState.h"
-#include"CircleButton.h"
+
 
 
 
@@ -42,7 +31,7 @@ class GameManager
 	//inits
 	void initVariables();
 	void initWindow();
-	void initFonts();
+	
 
 	void pullEvents();
 	
@@ -55,8 +44,6 @@ public:
 
 	GameManager();
 	~GameManager();
-
-	bool mouseButtonReleased();
 
 	void update();
 	void render();

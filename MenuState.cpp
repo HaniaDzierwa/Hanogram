@@ -1,5 +1,6 @@
 #include "MenuState.h"
 
+
 bool MenuState::getGameStartButonIsPressed()
 {
 	return gameStartbutton->isPressed();
@@ -14,48 +15,52 @@ bool MenuState::endGameState()
 {
 	return false;
 }
-
-void MenuState::updateLevel()
+int MenuState::updateLevel()
 {
-	if (this->mouseHeld == false)
+	
+	if (getSelectLevelButtonIsPressed() and clock.getElapsedTime() > this->time)
 	{
-		this->mouseHeld = true;
-		if (it == levelANDsize.end())
+		showLevel->setText(it->first);
+		showLevel->setTextPosition();
+		toReturn = it->second;
+		it++;
+		clock.restart();
+
+	}
+		
+	if (it == levelANDsize.end())
 		{
 			it = levelANDsize.begin();
 		}
-
-
-		if (getSelectLevelButtonIsPressed())
-		{
-			showLevel->setText(it->first);
-			showLevel->setTextPosition();
-			it++;
-
-
-		}
-
-	}
-	else
-		this->mouseHeld = false;
-
+		
+    return toReturn;
+	
 }
 
 
 
-MenuState::MenuState(sf::RenderWindow* window, std::stack<State*>* states, sf::Event& event) : window(window), states(states), event(event)
+void MenuState::initLevel()
 {
-	this->windowHeight = window->getSize().x;
-	this->windowWidth = window->getSize().y;
-	this->windowPossition = window->getPosition();
+	levelANDsize["EASY"] = 10;
+	levelANDsize["MEDIUM"] = 10;
+	levelANDsize["HARD"] = 15;
+
+	this->it = levelANDsize.begin();
+	this->toReturn = levelANDsize.begin()->second;
+}
 
 
-	this->gameStartbutton = new CircleButton(250, 600, 80,0,
+void MenuState::initButtons()
+{
+	
+	this->gameStartbutton = new CircleButton(250, 600, 80, 0,
 		&this->font, "START",
-		sf::Color(195,223,250) , sf::Color::White, sf::Color::Green);
+		sf::Color(177, 214, 242), sf::Color::White, sf::Color::Black);
+	this->gameStartbutton->getShape().setOutlineThickness(2.f);
+	this->gameStartbutton->getShape().setOutlineColor(sf::Color(15, 4, 135));
 
 
-	this->selectLevelbutton = new RectangleButton(650, 400, 100, 100,90,
+	this->selectLevelbutton = new RectangleButton(650, 400, 100, 100, 90,
 		&this->font, "",
 		sf::Color::White, sf::Color(235, 194, 231), sf::Color(213, 131, 205));
 	this->selectLevelbutton->setSprite("strzalka.png");
@@ -63,78 +68,66 @@ MenuState::MenuState(sf::RenderWindow* window, std::stack<State*>* states, sf::E
 
 	this->showLevel = new RectangleButton(250, 400, 300, 100, 0,
 		&this->font, "EASY",
-		sf::Color(183,54,170), sf::Color::Blue, sf::Color::White);
+		sf::Color(183, 54, 170), sf::Color::Blue, sf::Color::White);
 
 
 	this->level = new RectangleButton(250, 300, 300, 100, 0,
 		&this->font, "POZIOM :",
 		sf::Color::Transparent, sf::Color::Blue, sf::Color::White);
+
 	
 	this->title = new RectangleButton(50, 100, 700, 150, 0,
 		&this->font, "",
 		sf::Color::White, sf::Color::White, sf::Color::White);
 	this->title->setSprite("tytul.png");
-	
 
-	levelANDsize["EASY"]= 10;
-	levelANDsize["MEDIUM"] = 10;
-	levelANDsize["HARD"] = 15;
+}
 
-	it = levelANDsize.begin();
-
-    mouseHeld = false;
-
-
+MenuState::MenuState(sf::RenderWindow* window, std::stack<State*>* states, sf::Event& event) : State(window, states), event(event)
+{
+	this->window = window;
+	this->states = states;
+	initButtons();
+	initLevel();
 }
 
 
 MenuState::~MenuState()
 {
-
-	// instal onother program to check memory leaks  //
-	
-	//delete this->window;
-	
 	delete this->gameStartbutton;
-	//delete this->gameState;
-	
-	//check?
-
-	//delete this->states->top();
-	//delete (this->states);
+	delete this->title;
+	delete this->selectLevelbutton;
+	delete this->showLevel;
+	delete this->level;
 	
 }
 
 void MenuState::update()
 {
-
-	this->text.setString("Menu");
 	auto mousePosWindow = sf::Mouse::getPosition(*this->window);
 	auto mousePosFloat = this->window->mapPixelToCoords(mousePosWindow);
-	this->gameStartbutton->update(mousePosFloat);
-	this->updateLevel();
-	this->selectLevelbutton->update(mousePosFloat);
 	
+	this->gameStartbutton->update(mousePosFloat);
+	this->selectLevelbutton->update(mousePosFloat);
 
+	this->gridSize = this->updateLevel();
 
 	if (gameStartbutton->isPressed())
 	{
-		states->push(new GameState(this->window, this->states, event));
+		states->push(new GameState(this->window, this->states, this->gridSize));
 	}
-	
 
 }
 
 void  MenuState::render(sf::RenderTarget* target)
 {
 	this->showLevel->render(window);
-	this->gameStartbutton->render(window);
-	
 	this->selectLevelbutton->render(window);
 	this->level->render(window);
 	this->title->render(window);
 
-	target->draw(this->text);
+this->gameStartbutton->render(window);
+	
 }
 
 

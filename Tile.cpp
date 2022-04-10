@@ -1,34 +1,18 @@
 #include "Tile.h"
 
-Tile::Tile(sf::Vector2f position, sf::Color endStateColor)
+Tile::Tile(sf::Vector2f position, int size)
 {
-	
-	this->size = TileData::tileSize;
+	this->size = size;
 	this->position = position;
-	this->endStateColor = endStateColor;
-	//this->defaultColor = TileData::blankStateColor;
-
-	this->shape.setSize(sf::Vector2f(size,size));
-	this->shape.setPosition(position);
-	this->shape.setFillColor(defaultColor);
-	this->shape.setOutlineColor(blackColor);
-	this->shape.setOutlineThickness(1.f);
-
-
+	this-> thicknesEdge = AllTileData::thicknes;
+	this->emptyColorTile = sf::Color::White;
+	this->outlineColor = sf::Color::Black;
 }
 
 Tile::~Tile()
 {
 }
 
-void Tile::update(const sf::Vector2f mousePos)
-{
 
-	// update na odpowiedni color 
-}
 
-void Tile::render(sf::RenderTarget* target)
-{
-	target->draw(this->shape);
-}
 
