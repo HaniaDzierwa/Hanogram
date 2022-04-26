@@ -27,17 +27,9 @@ RectangleButton::~RectangleButton()
 {
 }
 
-
-void RectangleButton::setSprite(std::string name)
+void RectangleButton::setTexture(sf::Texture *texture)
 {
-
-	if (!this->texture.loadFromFile(name))
-	{
-		std::cout << "Load failed";
-
-	}
-	this->shape.setTexture(&texture, false);
-
+	this->shape.setTexture(texture, false);
 }
 
 void RectangleButton::setTextPosition()

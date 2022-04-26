@@ -20,12 +20,13 @@ void State::initText()
 
 }
 
-State::State(sf::RenderWindow *window, std::stack<State*>* states)
+State::State(sf::RenderWindow *window, std::stack<State*>* states, TextureManager *textureManager)
 {
     initFonts();
     initText();
     this->window = window;
     this->states = states;
+    this->textureManager = textureManager;
 }
 
 

@@ -10,7 +10,7 @@ void Grid::initTiles()
 		std::vector<Tile*> rowC;
 		for (int j = maxNumbers*tileSize; j < size * tileSize; j += tileSize)
 		{
-			rowC.push_back(new TileClicked(sf::Vector2f(j+gridOffSet.x, i+gridOffSet.y), sf::Color(0,0,0),tileSize));
+			rowC.push_back(new TileClicked(sf::Vector2f(j+gridOffSet.x, i+gridOffSet.y), sf::Color(0,0,0),tileSize, textureManager));
 		}
 		this->tilesClicked.push_back(rowC);
 
@@ -22,7 +22,7 @@ void Grid::initTiles()
 		for (int j = 0; j < size * tileSize; j += tileSize)
 		{
 			{
-				rowN.push_back(new TileNumber(sf::Vector2f(j + gridOffSet.x, i + gridOffSet.y), tileSize));
+				rowN.push_back(new TileNumber(sf::Vector2f(j + gridOffSet.x, i + gridOffSet.y), tileSize, 6));
 			}
 			
 		}
@@ -50,8 +50,9 @@ void Grid::initLines()
  this->coastlineVerticalSide.setFillColor(sf::Color::Black);
 }
 
-Grid::Grid(int Levelsize, sf::RenderWindow* window)
+Grid::Grid(int Levelsize, sf::RenderWindow* window, TextureManager *textureManager)
 {
+	this->textureManager = textureManager;
 	this->maxNumbers = 4; // read from file
 	this->size = Levelsize+maxNumbers;
 	tileSize = AllTileData::tileSize / this->size;
@@ -59,6 +60,7 @@ Grid::Grid(int Levelsize, sf::RenderWindow* window)
 	initTiles();
 	initLines();
 	this->boxSize = AllTileData::boxSize; 
+	
 	
 	
 }
@@ -82,16 +84,27 @@ Grid::~Grid()
 		}
 
 	}
+
+	
 	
 
 }
 
-void Grid::updateTiles(const sf::Vector2f mousePos)
+void Grid::updateTiles(const sf::Vector2f mousePos, TileStateSelect tileStateSelect)
 {
-	// empty/cross/full
+    for (int i = 0; i < tilesClicked.size(); i++)
+	{
+		for (int j = 0; j < tilesClicked[i].size(); j++)
+		{
+			tilesClicked[i][j]->update(mousePos,&(this->clock), tileStateSelect);
+
+		}
+	}
+	
 }
-void Grid::update(const sf::Vector2f mousePos)
+void Grid::update(const sf::Vector2f mousePos, TileStateSelect tileStateSelect)
 {
+	updateTiles(mousePos,tileStateSelect);
 	
 }
 void Grid::renderLines(sf::RenderTarget* target)
@@ -106,7 +119,7 @@ void Grid::renderLines(sf::RenderTarget* target)
 	for (int i = maxNumbers*tileSize ; i< ((this->size+1) * this->tileSize); i += this->tileSize)
 	{
 		
-		if ((i - (maxNumbers * tileSize)) % (this->boxSize* this->tileSize ) == 0 )   // teraz to nie dziala -manumbers to powinno byc
+		if ((i - (maxNumbers * tileSize)) % (this->boxSize* this->tileSize ) == 0 )   
 		{
 			this->coastlineHorizontal.setPosition(sf::Vector2f(gridOffSet.x , i+gridOffSet.y));
 			target->draw(this->coastlineHorizontal);

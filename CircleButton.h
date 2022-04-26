@@ -17,6 +17,9 @@ public :
 	~CircleButton();
 
 	sf::CircleShape getShape();
+
+	void setTexture(sf::Texture *texture);
+	
 	void update(const sf::Vector2f mousePos);
 	void render(sf::RenderTarget* target);
 	

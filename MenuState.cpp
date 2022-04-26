@@ -3,12 +3,12 @@
 
 bool MenuState::getGameStartButonIsPressed()
 {
-	return gameStartbutton->isPressed();
+	return gameStartButton->isPressed();
 }
 
 bool MenuState::getSelectLevelButtonIsPressed()
 {
-	return selectLevelbutton->isPressed();
+	return selectLevelButton->isPressed();
 }
 
 bool MenuState::endGameState()
@@ -50,20 +50,26 @@ void MenuState::initLevel()
 }
 
 
+void MenuState::initVariables()
+{
+	this->titleTexture = textureManager->getTexture("title");
+	this->selectLevelButtonTexture = textureManager->getTexture("selectLevelButton");
+}
+
 void MenuState::initButtons()
 {
 	
-	this->gameStartbutton = new CircleButton(250, 600, 80, 0,
+	this->gameStartButton = new CircleButton(250, 600, 80, 0,
 		&this->font, "START",
 		sf::Color(177, 214, 242), sf::Color::White, sf::Color::Black);
-	this->gameStartbutton->getShape().setOutlineThickness(2.f);
-	this->gameStartbutton->getShape().setOutlineColor(sf::Color(15, 4, 135));
+	this->gameStartButton->getShape().setOutlineThickness(2.f);
+	this->gameStartButton->getShape().setOutlineColor(sf::Color(15, 4, 135));
 
 
-	this->selectLevelbutton = new RectangleButton(650, 400, 100, 100, 90,
+	this->selectLevelButton = new RectangleButton(650, 400, 100, 100, 90,
 		&this->font, "",
 		sf::Color::White, sf::Color(235, 194, 231), sf::Color(213, 131, 205));
-	this->selectLevelbutton->setSprite("strzalka.png");
+	  this->selectLevelButton->setTexture(this->selectLevelButtonTexture);
 
 
 	this->showLevel = new RectangleButton(250, 400, 300, 100, 0,
@@ -79,14 +85,16 @@ void MenuState::initButtons()
 	this->title = new RectangleButton(50, 100, 700, 150, 0,
 		&this->font, "",
 		sf::Color::White, sf::Color::White, sf::Color::White);
-	this->title->setSprite("tytul.png");
+	this->title->setTexture(this->titleTexture);
 
 }
 
-MenuState::MenuState(sf::RenderWindow* window, std::stack<State*>* states, sf::Event& event) : State(window, states), event(event)
+MenuState::MenuState(sf::RenderWindow* window, std::stack<State*>* states, TextureManager* textureManager, sf::Event& event) : State(window, states, textureManager), event(event)
 {
 	this->window = window;
 	this->states = states;
+	this->textureManager = textureManager;
+	initVariables();
 	initButtons();
 	initLevel();
 }
@@ -94,9 +102,9 @@ MenuState::MenuState(sf::RenderWindow* window, std::stack<State*>* states, sf::E
 
 MenuState::~MenuState()
 {
-	delete this->gameStartbutton;
+	delete this->gameStartButton;
 	delete this->title;
-	delete this->selectLevelbutton;
+	delete this->selectLevelButton;
 	delete this->showLevel;
 	delete this->level;
 	
@@ -107,14 +115,14 @@ void MenuState::update()
 	auto mousePosWindow = sf::Mouse::getPosition(*this->window);
 	auto mousePosFloat = this->window->mapPixelToCoords(mousePosWindow);
 	
-	this->gameStartbutton->update(mousePosFloat);
-	this->selectLevelbutton->update(mousePosFloat);
+	this->gameStartButton->update(mousePosFloat);
+	this->selectLevelButton->update(mousePosFloat);
 
 	this->gridSize = this->updateLevel();
 
-	if (gameStartbutton->isPressed())
+	if (gameStartButton->isPressed())
 	{
-		states->push(new GameState(this->window, this->states, this->gridSize));
+		states->push(new GameState(this->window, this->states, this->textureManager,this->gridSize));
 	}
 
 }
@@ -122,11 +130,10 @@ void MenuState::update()
 void  MenuState::render(sf::RenderTarget* target)
 {
 	this->showLevel->render(window);
-	this->selectLevelbutton->render(window);
+	this->selectLevelButton->render(window);
 	this->level->render(window);
 	this->title->render(window);
-
-this->gameStartbutton->render(window);
+	this->gameStartButton->render(window);
 	
 }
 

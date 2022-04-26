@@ -11,8 +11,8 @@
 
 class MenuState : public State
 {
-	CircleButton* gameStartbutton;
-	RectangleButton * selectLevelbutton;
+	CircleButton* gameStartButton;
+	RectangleButton * selectLevelButton;
 	RectangleButton* showLevel;
 	RectangleButton* level;
 	RectangleButton* title;
@@ -28,23 +28,26 @@ class MenuState : public State
 	
 	sf::Event event;
 
+	sf::Texture* titleTexture;
+	sf::Texture* selectLevelButtonTexture;
+
 	int gridSize;
 	
 	bool endGameState();
 	int updateLevel();
 
+	void initVariables();
 	void initButtons();
 	void initLevel();
+	
 
-	//clock
-	sf::Clock clock;
-	sf::Time time = sf::seconds(0.3);
+	
 	
 
 public:	
 	
 	
-	MenuState(sf::RenderWindow* window, std::stack<State*>* states, sf::Event &event);
+	MenuState(sf::RenderWindow* window, std::stack<State*>* states, TextureManager *textureManager, sf::Event &event);
 	~MenuState();
 
 	bool getGameStartButonIsPressed();

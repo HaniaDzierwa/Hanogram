@@ -21,7 +21,6 @@ protected:
 
 	
 
-
 public:
 
 	Button(float x, float y, float rotation,
@@ -32,6 +31,7 @@ public:
 
 	const bool isPressed() const;
 	void setText(std::string text);
+	virtual void setTexture(sf::Texture* texture) = 0;
 
 	virtual void update(const sf::Vector2f mousePos) = 0;
 	virtual  void render(sf::RenderTarget* target) = 0;

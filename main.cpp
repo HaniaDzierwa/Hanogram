@@ -1,13 +1,13 @@
 
 
 #include <vld.h>
-#include <iostream>
 #include "GameManager.h"
-#include <fstream>
 
 
 int main ()
 {
+
+  
     {
 
         GameManager gameManager;

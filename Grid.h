@@ -5,8 +5,10 @@
 #include "TileClicked.h"
 #include "TileNumber.h"
 #include <iostream>
+#include "TextureManager.h"
 
 using namespace std;
+
 class Grid
 {
 	vector<vector<Tile*>> tilesClicked; 
@@ -29,15 +31,23 @@ class Grid
 
 	void initTiles();
 	void initLines();
+
+	TextureManager* textureManager;
+
+	//clock
+	sf::Clock clock;
+	
+	
+
 public: 
 
-	Grid(int size,sf::RenderWindow* window);
+	Grid(int size,sf::RenderWindow* window, TextureManager*textureManager);
 	~Grid();
 
 	//update
 	
-	void updateTiles(const sf::Vector2f mousePos);
-	void update(const sf::Vector2f mousePos);
+	void updateTiles(const sf::Vector2f mousePos, TileStateSelect tileState);
+	void update(const sf::Vector2f mousePos, TileStateSelect tileState);
 
 	//render
 	void renderLines(sf::RenderTarget* target);

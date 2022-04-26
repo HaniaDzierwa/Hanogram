@@ -5,9 +5,6 @@
 #include "MenuState.h"
 
 
-
-
-
 class GameManager
 {
 
@@ -28,13 +25,16 @@ class GameManager
 	// Game states
 	std::stack<State*>states;
 
+	//textures
+	TextureManager *textureManager;
+
 	//inits
 	void initVariables();
 	void initWindow();
 	
-
 	void pullEvents();
 	
+
 
 public:
 

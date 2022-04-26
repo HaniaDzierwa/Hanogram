@@ -28,6 +28,10 @@ sf::CircleShape CircleButton::getShape()
 	return  this->shape;
 }
 
+void CircleButton::setTexture(sf::Texture *texture)
+{
+	this->shape.setTexture(texture, false);
+}
 void CircleButton::update(const sf::Vector2f mousePos)
 {
 	this->buttonState = unactive;
