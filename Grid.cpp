@@ -5,20 +5,21 @@
 void Grid::initTiles()
 {
 	
-	for (int i = maxNumbers*tileSize; i < size * tileSize; i +=tileSize)
+	for (int i = maxNumbers*tileSize, n=0; i < size * tileSize; i +=tileSize)
 	{
-		std::vector<Tile*> rowC;
-		for (int j = maxNumbers*tileSize; j < size * tileSize; j += tileSize)
+		std::vector<TileClicked*> rowC;
+		for (int j = maxNumbers*tileSize, m=0; j < size * tileSize; j += tileSize)
 		{
-			rowC.push_back(new TileClicked(sf::Vector2f(j+gridOffSet.x, i+gridOffSet.y), sf::Color(0,0,0),tileSize, textureManager));
+			rowC.push_back(new TileClicked(sf::Vector2f(j+gridOffSet.x, i+gridOffSet.y), (*tilesLoadData)[n][m],tileSize, textureManager));
+			m++;
 		}
 		this->tilesClicked.push_back(rowC);
-
+		n++;
 	}
 
 	for (int i = 0; i < size * tileSize; i += tileSize)
 	{
-		std::vector<Tile*> rowN;
+		std::vector<TileNumber*> rowN;
 		for (int j = 0; j < size * tileSize; j += tileSize)
 		{
 			{
@@ -50,18 +51,35 @@ void Grid::initLines()
  this->coastlineVerticalSide.setFillColor(sf::Color::Black);
 }
 
-Grid::Grid(int Levelsize, sf::RenderWindow* window, TextureManager *textureManager)
+Grid::Grid( sf::RenderWindow* window, TextureManager *textureManager, pair<string,int> levelANDsize, sf::Font* font)
 {
 	this->textureManager = textureManager;
+	this->levelLoader = new LevelLoader(levelANDsize.first);
+	this->tilesLoadData = levelLoader->getTilesLoadData();
+	// load file with informations about game
+
 	this->maxNumbers = 4; // read from file
-	this->size = Levelsize+maxNumbers;
+	this->size = levelANDsize.second +maxNumbers;
 	tileSize = AllTileData::tileSize / this->size;
 	this->gridOffSet = sf::Vector2f((window->getSize().x-this->size*this->tileSize)/2 , (window->getSize().y - this->size *this->tileSize)/ 2 );
+	
+	this->boxSize = AllTileData::boxSize; 
+
+	this->gridValidator = new GridValidator(this->tilesLoadData, levelANDsize.second);
+	
+	this->amountFullStatesFINISH = levelLoader->getAmountFullStates();
+	this->font = *font;
+
 	initTiles();
 	initLines();
-	this->boxSize = AllTileData::boxSize; 
-	
-	
+
+	this-> fullTileSquare = new RectangleButton(300, 80, 40, 40, 0,
+		&this->font, "",
+		sf::Color(54, 54, 54), sf::Color::White, sf::Color::Green);
+
+	this->amountTilesClickedandToClick = new RectangleButton(360, 75, 120, 50, 0,
+		&this->font, "0/23",
+		sf::Color::Transparent, sf::Color::White, sf::Color::Green);
 	
 }
 
@@ -85,6 +103,12 @@ Grid::~Grid()
 
 	}
 
+	delete this->levelLoader;
+
+	delete this->gridValidator;
+	
+	delete this->amountTilesClickedandToClick;
+	delete this->fullTileSquare;
 	
 	
 
@@ -92,19 +116,60 @@ Grid::~Grid()
 
 void Grid::updateTiles(const sf::Vector2f mousePos, TileStateSelect tileStateSelect)
 {
+	if (this->amountFullStatesNOW == this->amountFullStatesFINISH)
+	{
+		mistakes = this->gridValidator->searchForMistakes(&this->tilesClicked);  // int ilosc bledow, =0 to dobrze i koniec gry , !=0 wyswietl komunikat 	, narazie wyswietla w ciagu komunikaty
+		if (mistakes == 0)
+		{
+			end = true;
+			std::cout << "dobrze";
+
+			for (int i = 0; i < tilesClicked.size(); i++)
+			{
+				for (int j = 0; j < tilesClicked[i].size(); j++)
+				{
+					this->tilesClicked[i][j]->setTileState(endState); // pojawia sie hover na ostatnije klatce
+
+				}
+			}
+
+			
+		}
+
+		else
+			std::cout << "zle";
+	}
+
+	
+
+	this->amountFullStatesNOW = 0;
     for (int i = 0; i < tilesClicked.size(); i++)
 	{
 		for (int j = 0; j < tilesClicked[i].size(); j++)
 		{
-			tilesClicked[i][j]->update(mousePos,&(this->clock), tileStateSelect);
+			this->tilesClicked[i][j]->update(mousePos,&(this->clock), tileStateSelect);
 
+			if (this->tilesClicked[i][j]->getTileState() == fullState)
+			{
+				//wyswietl na ekran update textbox
+				this->amountFullStatesNOW++;
+			}
 		}
 	}
+
+	
+	
 	
 }
 void Grid::update(const sf::Vector2f mousePos, TileStateSelect tileStateSelect)
 {
-	updateTiles(mousePos,tileStateSelect);
+	if (!end)
+	{
+		updateTiles(mousePos, tileStateSelect);
+	}
+		std::string text;
+		text = to_string(amountFullStatesNOW) + " /" + to_string(amountFullStatesFINISH);
+		this->amountTilesClickedandToClick->setText(text);
 	
 }
 void Grid::renderLines(sf::RenderTarget* target)
@@ -166,4 +231,6 @@ void Grid::render(sf::RenderTarget* target)
 	renderTilesClicked(target);
 	renderLines(target);
 	
+	this->fullTileSquare->render(target);
+	this->amountTilesClickedandToClick->render(target);
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+
 #include "Tile.h"
 #include "TextureManager.h"
 
@@ -10,14 +11,17 @@ class TileClicked : public Tile
 	sf::Color fullColorTile;
 	sf::Color hoverColorTile;
 
+	sf::Color colorUnderCross;
+
 	//textures
 	TextureManager* textureManager;
 	sf::Texture* crossTexture;
-
+	sf::Sprite sprite;
 
 	TileState tileState;
 	
 	sf::Time timeDelay = sf::seconds(0.1);
+	
 	
 	
 	void updateTileState(const sf::Vector2f mousePos,sf::Clock *clock, TileStateSelect tileStateSelect);
@@ -28,10 +32,13 @@ class TileClicked : public Tile
 	
 
 public :
-	TileClicked(sf::Vector2f position, sf::Color endStateColor, int size, TextureManager *textureManager);
+	TileClicked(sf::Vector2f position, TileLoadData *tileLoadData, int size, TextureManager *textureManager);
 	~TileClicked();
 
 	void setTexture(sf::Texture *texture);
+
+	TileState getTileState();
+	void setTileState(TileState tileState);
 
     void update(const sf::Vector2f mousePos, sf::Clock *clock, TileStateSelect tileStateSelect);
 	void render(sf::RenderTarget* target);

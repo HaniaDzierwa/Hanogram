@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "AllTileData.h"
+#include <iostream>
 
 
 class Tile
@@ -14,10 +15,12 @@ protected:
 
 	sf::Color emptyColorTile;
 
-
+	bool endState;
 
 	sf::Color outlineColor;
 	float thicknesEdge;
+
+	TileLoadData* tileLoadData;
 
 	
 public:

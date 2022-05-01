@@ -7,45 +7,44 @@
 #include "RectangleButton.h"
 #include <unordered_map>
 
-//enum Level { Easy="esay", Medium, Hard };
-
 class MenuState : public State
 {
+	//buttons
 	CircleButton* gameStartButton;
 	RectangleButton * selectLevelButton;
-	RectangleButton* showLevel;
-	RectangleButton* level;
-	RectangleButton* title;
+	RectangleButton* showLevelTextBox;
+	RectangleButton* levelTextBox;
+	RectangleButton* titleTextBox;
 
 	//states
 	std::stack<State*>* states;
 
 
 	//level
-	std::unordered_map<std::string, int> levelANDsize; 
+	std::unordered_map<std::string, int> levelANDsizeAll; 
 	std::unordered_map<std::string, int>::iterator it;
-	int toReturn;
+
+	std::pair<std::string, int> toReturn;
 	
 	sf::Event event;
 
+	//textures
 	sf::Texture* titleTexture;
 	sf::Texture* selectLevelButtonTexture;
 
-	int gridSize;
-	
-	bool endGameState();
-	int updateLevel();
+	std::pair<std::string, int> levelANDsize;
 
+
+	//inits
 	void initVariables();
 	void initButtons();
 	void initLevel();
 	
-
-	
+	bool endGameState();
+	std::pair<std::string, int> updateLevel();
 	
 
 public:	
-	
 	
 	MenuState(sf::RenderWindow* window, std::stack<State*>* states, TextureManager *textureManager, sf::Event &event);
 	~MenuState();
@@ -55,9 +54,5 @@ public:
 
 	void update();
 	void render(sf::RenderTarget* target);
-
-	
-	
-
 
 };

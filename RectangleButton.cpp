@@ -41,6 +41,11 @@ void RectangleButton::setTextPosition()
 
 }
 
+void RectangleButton::setText(std::string text)
+{
+	this->text.setString(text);
+}
+
 
 void RectangleButton::update(const sf::Vector2f mousePos)
 {

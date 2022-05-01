@@ -15,22 +15,22 @@ bool MenuState::endGameState()
 {
 	return false;
 }
-int MenuState::updateLevel()
+pair<string,int> MenuState::updateLevel()
 {
 	
 	if (getSelectLevelButtonIsPressed() and clock.getElapsedTime() > this->time)
 	{
-		showLevel->setText(it->first);
-		showLevel->setTextPosition();
-		toReturn = it->second;
+		showLevelTextBox->setText(it->first);
+		showLevelTextBox->setTextPosition();
+		toReturn = make_pair(it->first, it->second);
 		it++;
 		clock.restart();
 
 	}
 		
-	if (it == levelANDsize.end())
+	if (it == levelANDsizeAll.end())
 		{
-			it = levelANDsize.begin();
+			it = levelANDsizeAll.begin();
 		}
 		
     return toReturn;
@@ -41,12 +41,12 @@ int MenuState::updateLevel()
 
 void MenuState::initLevel()
 {
-	levelANDsize["EASY"] = 10;
-	levelANDsize["MEDIUM"] = 10;
-	levelANDsize["HARD"] = 15;
+	levelANDsizeAll["EASY"] = 10;
+	levelANDsizeAll["MEDIUM"] = 10;
+	levelANDsizeAll["HARD"] = 15;
 
-	this->it = levelANDsize.begin();
-	this->toReturn = levelANDsize.begin()->second;
+	this->it = levelANDsizeAll.begin();
+	this->toReturn = make_pair(levelANDsizeAll.begin()->first, levelANDsizeAll.begin()->second);
 }
 
 
@@ -72,20 +72,20 @@ void MenuState::initButtons()
 	  this->selectLevelButton->setTexture(this->selectLevelButtonTexture);
 
 
-	this->showLevel = new RectangleButton(250, 400, 300, 100, 0,
+	this->showLevelTextBox = new RectangleButton(250, 400, 300, 100, 0,
 		&this->font, "EASY",
 		sf::Color(183, 54, 170), sf::Color::Blue, sf::Color::White);
 
 
-	this->level = new RectangleButton(250, 300, 300, 100, 0,
+	this->levelTextBox = new RectangleButton(250, 300, 300, 100, 0,
 		&this->font, "POZIOM :",
 		sf::Color::Transparent, sf::Color::Blue, sf::Color::White);
 
 	
-	this->title = new RectangleButton(50, 100, 700, 150, 0,
+	this->titleTextBox = new RectangleButton(50, 100, 700, 150, 0,
 		&this->font, "",
 		sf::Color::White, sf::Color::White, sf::Color::White);
-	this->title->setTexture(this->titleTexture);
+	this->titleTextBox->setTexture(this->titleTexture);
 
 }
 
@@ -103,10 +103,10 @@ MenuState::MenuState(sf::RenderWindow* window, std::stack<State*>* states, Textu
 MenuState::~MenuState()
 {
 	delete this->gameStartButton;
-	delete this->title;
+	delete this->titleTextBox;
 	delete this->selectLevelButton;
-	delete this->showLevel;
-	delete this->level;
+	delete this->showLevelTextBox;
+	delete this->levelTextBox;
 	
 }
 
@@ -118,21 +118,22 @@ void MenuState::update()
 	this->gameStartButton->update(mousePosFloat);
 	this->selectLevelButton->update(mousePosFloat);
 
-	this->gridSize = this->updateLevel();
+	this->levelANDsize = this->updateLevel();
 
 	if (gameStartButton->isPressed())
 	{
-		states->push(new GameState(this->window, this->states, this->textureManager,this->gridSize));
+		// load needed levelFile 
+		states->push(new GameState(this->window, this->states, this->textureManager,this->levelANDsize));
 	}
 
 }
 
 void  MenuState::render(sf::RenderTarget* target)
 {
-	this->showLevel->render(window);
+	this->showLevelTextBox->render(window);
 	this->selectLevelButton->render(window);
-	this->level->render(window);
-	this->title->render(window);
+	this->levelTextBox->render(window);
+	this->titleTextBox->render(window);
 	this->gameStartButton->render(window);
 	
 }

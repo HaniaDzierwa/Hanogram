@@ -39,9 +39,31 @@ void GameState::updateStateSelect()
 	 }
 }
 
-GameState::GameState(sf::RenderWindow* window, std::stack<State*>* states, TextureManager *textureManager, int size) : State(window, states,textureManager), size(size)
+sf::Vector2f GameState::updateMousePos()
 {
-	this->window = window;
+	auto mousePosWindow = sf::Mouse::getPosition(*this->window);
+	auto mousePosFloat = this->window->mapPixelToCoords(mousePosWindow);
+
+	return mousePosFloat;
+
+}
+
+void GameState::updateButtons(sf::Vector2f mousePosFloat)
+{
+	this->stateSelectButton->update(mousePosFloat);
+	this->gameBackbutton->update(mousePosFloat);
+
+
+	if (gameBackbutton->isPressed())
+	{
+		State* toDelete = this->states->top();
+		this->states->pop();
+		delete toDelete;
+	}
+}
+
+GameState::GameState(sf::RenderWindow* window, std::stack<State*>* states, TextureManager *textureManager, std::pair<std::string,int> levelANDsize) : State(window, states,textureManager), levelANDsize(levelANDsize)
+{
 	this->states = states;
 	this->textureManager = textureManager;
 
@@ -49,10 +71,10 @@ GameState::GameState(sf::RenderWindow* window, std::stack<State*>* states, Textu
 	this->crossStateSprite = textureManager->getTexture("crossState");
 
 	initButtons();
-;
 
+	this->levelANDsize = levelANDsize;
 	this->tileStateSelect = full;
-	this->grid = new Grid(size, window, textureManager);
+	this->grid = new Grid( window, textureManager, levelANDsize,&font);
 
 
 }
@@ -62,34 +84,16 @@ GameState::~GameState()
 	delete this->gameBackbutton;
 	delete this->grid;
 	
-	
 }
 
 void GameState::update()
 {
-	auto mousePosWindow = sf::Mouse::getPosition(*this->window);
-	auto mousePosFloat = this->window->mapPixelToCoords(mousePosWindow);
-
+	auto mousePosFloat = updateMousePos();
 	this->grid->update(mousePosFloat,tileStateSelect);
-
 	this->updateStateSelect();
-	
 	this->text.setString("Game");
+	this->updateButtons(mousePosFloat);
 
-
-	this->stateSelectButton->update(mousePosFloat);
-	this->gameBackbutton->update(mousePosFloat);
-
-
-	if (gameBackbutton->isPressed())
-	{
-		State* toDelete = this->states->top();
-		this->states->pop();
-		delete toDelete; 
-
-	}
-
-	
 }
 
 void GameState::render(sf::RenderTarget* target)

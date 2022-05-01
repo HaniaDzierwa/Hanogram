@@ -17,6 +17,7 @@ public:
 	void setTexture(sf::Texture *texture);
 
 	void setTextPosition();
+	void setText(std::string  text);
 	void update(const sf::Vector2f mousePos);
 	void render(sf::RenderTarget* target);
 	

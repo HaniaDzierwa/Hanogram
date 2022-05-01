@@ -1,24 +1,29 @@
 #pragma once
 
 #include <vector>
+#include <iostream>
+
 #include "Tile.h"
 #include "TileClicked.h"
 #include "TileNumber.h"
-#include <iostream>
+
 #include "TextureManager.h"
+#include "LevelLoader.h"
+#include "GridValidator.h"
+#include "RectangleButton.h"
 
 using namespace std;
 
 class Grid
 {
-	vector<vector<Tile*>> tilesClicked; 
-	vector<vector<Tile*>> tilesNumber;
+	vector<vector<TileClicked*>> tilesClicked; 
+	vector<vector<TileNumber*>> tilesNumber;
 
 	sf::Vector2f gridOffSet;
-	int size;
 
 	int tileSize;
-	int maxNumbers; // max amount of numbers to fill np 1 2 4 3  to bedzie ilosc 4 
+	int maxNumbers; // max amount of numbers to fill np 
+	int size;   //1 2 4 3  to bedzie ilosc 4 
 	
 	sf::RectangleShape coastlineHorizontal;
 	sf::RectangleShape coastlineVertical;
@@ -33,15 +38,29 @@ class Grid
 	void initLines();
 
 	TextureManager* textureManager;
+	LevelLoader * levelLoader;
+	GridValidator* gridValidator;
 
 	//clock
 	sf::Clock clock;
 	
+	std::vector<std::vector<TileLoadData*>>* tilesLoadData;
 	
+	int amountFullStatesNOW = 0;
+	int amountFullStatesFINISH;
+
+	int mistakes;
+
+	RectangleButton* fullTileSquare;
+	RectangleButton* amountTilesClickedandToClick;
+
+	sf::Font font;
+
+	bool end = false;
 
 public: 
 
-	Grid(int size,sf::RenderWindow* window, TextureManager*textureManager);
+	Grid(sf::RenderWindow* window, TextureManager* textureManager, pair<string, int> levelANDsize, sf::Font *font);
 	~Grid();
 
 	//update
