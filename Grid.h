@@ -38,7 +38,7 @@ class Grid
 	void initLines();
 
 	TextureManager* textureManager;
-	LevelLoader * levelLoader;
+	
 	GridValidator* gridValidator;
 
 	//clock
@@ -60,7 +60,7 @@ class Grid
 
 public: 
 
-	Grid(sf::RenderWindow* window, TextureManager* textureManager, pair<string, int> levelANDsize, sf::Font *font);
+	Grid(sf::RenderWindow* window, TextureManager* textureManager, pair<string, int> levelANDsize, sf::Font *font, std::vector<std::vector<TileLoadData*>>* tilesLoadData,int amountFullStatesFINISH);
 	~Grid();
 
 	//update

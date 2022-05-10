@@ -51,11 +51,12 @@ void Grid::initLines()
  this->coastlineVerticalSide.setFillColor(sf::Color::Black);
 }
 
-Grid::Grid( sf::RenderWindow* window, TextureManager *textureManager, pair<string,int> levelANDsize, sf::Font* font)
+Grid::Grid( sf::RenderWindow* window, TextureManager *textureManager, pair<string,int> levelANDsize, sf::Font* font, std::vector<std::vector<TileLoadData*>>* tilesLoadData, int amountFullStatesFINISH)
 {
 	this->textureManager = textureManager;
-	this->levelLoader = new LevelLoader(levelANDsize.first);
-	this->tilesLoadData = levelLoader->getTilesLoadData();
+	
+	this->tilesLoadData = tilesLoadData;
+	
 	// load file with informations about game
 
 	this->maxNumbers = 4; // read from file
@@ -67,7 +68,7 @@ Grid::Grid( sf::RenderWindow* window, TextureManager *textureManager, pair<strin
 
 	this->gridValidator = new GridValidator(this->tilesLoadData, levelANDsize.second);
 	
-	this->amountFullStatesFINISH = levelLoader->getAmountFullStates();
+	this->amountFullStatesFINISH = amountFullStatesFINISH;
 	this->font = *font;
 
 	initTiles();
@@ -78,7 +79,7 @@ Grid::Grid( sf::RenderWindow* window, TextureManager *textureManager, pair<strin
 		sf::Color(54, 54, 54), sf::Color::White, sf::Color::Green);
 
 	this->amountTilesClickedandToClick = new RectangleButton(360, 75, 120, 50, 0,
-		&this->font, "0/23",
+		&this->font, "0/0",
 		sf::Color::Transparent, sf::Color::White, sf::Color::Green);
 	
 }
@@ -103,7 +104,7 @@ Grid::~Grid()
 
 	}
 
-	delete this->levelLoader;
+
 
 	delete this->gridValidator;
 	
@@ -128,7 +129,7 @@ void Grid::updateTiles(const sf::Vector2f mousePos, TileStateSelect tileStateSel
 			{
 				for (int j = 0; j < tilesClicked[i].size(); j++)
 				{
-					this->tilesClicked[i][j]->setTileState(endState); // pojawia sie hover na ostatnije klatce
+					this->tilesClicked[i][j]->setTileState(endState); 
 
 				}
 			}
@@ -141,6 +142,7 @@ void Grid::updateTiles(const sf::Vector2f mousePos, TileStateSelect tileStateSel
 	}
 
 	
+	// count amount of fullStates
 
 	this->amountFullStatesNOW = 0;
     for (int i = 0; i < tilesClicked.size(); i++)

@@ -40,13 +40,15 @@ class MenuState : public State
 	void initButtons();
 	void initLevel();
 	
+
+	bool endGame; 
 	bool endGameState();
 	std::pair<std::string, int> updateLevel();
 	
 
 public:	
 	
-	MenuState(sf::RenderWindow* window, std::stack<State*>* states, TextureManager *textureManager, sf::Event &event);
+	MenuState(sf::RenderWindow* window, std::stack<State*>* states, TextureManager *textureManager, sf::Event &event, bool endGame);
 	~MenuState();
 
 	bool getGameStartButonIsPressed();

@@ -11,10 +11,12 @@ bool MenuState::getSelectLevelButtonIsPressed()
 	return selectLevelButton->isPressed();
 }
 
+
 bool MenuState::endGameState()
 {
-	return false;
+	return endGame;
 }
+
 pair<string,int> MenuState::updateLevel()
 {
 	
@@ -89,11 +91,12 @@ void MenuState::initButtons()
 
 }
 
-MenuState::MenuState(sf::RenderWindow* window, std::stack<State*>* states, TextureManager* textureManager, sf::Event& event) : State(window, states, textureManager), event(event)
+MenuState::MenuState(sf::RenderWindow* window, std::stack<State*>* states, TextureManager* textureManager, sf::Event& event, bool endGame) : State(window, states, textureManager), event(event), endGame(endGame)
 {
 	this->window = window;
 	this->states = states;
 	this->textureManager = textureManager;
+	this->endGame = endGame;
 	initVariables();
 	initButtons();
 	initLevel();
@@ -102,12 +105,14 @@ MenuState::MenuState(sf::RenderWindow* window, std::stack<State*>* states, Textu
 
 MenuState::~MenuState()
 {
-	delete this->gameStartButton;
+	//text boxes
 	delete this->titleTextBox;
-	delete this->selectLevelButton;
 	delete this->showLevelTextBox;
 	delete this->levelTextBox;
-	
+
+	//buttons
+	delete this->gameStartButton;
+	delete this->selectLevelButton;
 }
 
 void MenuState::update()
@@ -122,20 +127,31 @@ void MenuState::update()
 
 	if (gameStartButton->isPressed())
 	{
-		// load needed levelFile 
-		states->push(new GameState(this->window, this->states, this->textureManager,this->levelANDsize));
+		std::cout << "weszlismy\n";
+		GameState* gameState = new GameState(this->window, this->states, this->textureManager, this->levelANDsize);
+		if (!gameState->initialize())
+		{
+			delete gameState;
+			return;
+		}
+
+		this->states->push(gameState);
+		
+	
 	}
 
 }
 
 void  MenuState::render(sf::RenderTarget* target)
 {
+	//text boxes
 	this->showLevelTextBox->render(window);
-	this->selectLevelButton->render(window);
 	this->levelTextBox->render(window);
 	this->titleTextBox->render(window);
+
+	//buttons
 	this->gameStartButton->render(window);
-	
+	this->selectLevelButton->render(window);
 }
 
 

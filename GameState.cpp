@@ -1,4 +1,5 @@
 #include "GameState.h"
+#include "invalidRGBvalueExceptionsh.h"
 
 bool GameState::endGameState()
 {
@@ -73,17 +74,47 @@ GameState::GameState(sf::RenderWindow* window, std::stack<State*>* states, Textu
 	initButtons();
 
 	this->levelANDsize = levelANDsize;
+
+	// loading grid 
+	this->levelLoader = new LevelLoader();
 	this->tileStateSelect = full;
-	this->grid = new Grid( window, textureManager, levelANDsize,&font);
+	
+	
 
 
 }
+
+
 GameState::~GameState()
 {
 	delete this->stateSelectButton;
 	delete this->gameBackbutton;
 	delete this->grid;
+	delete this->levelLoader;
+}
+
+//albo to returnuje boola, albo sobie flage ustawiamy
+bool GameState::initialize()
+{
+	try 
+	{
+		this->levelLoader->load(levelANDsize.first);
+	}
+	catch(invalidRGBvalueExcepions e)
+	{
+		std::cerr << e.what();
+		return false;
+	}
+
+
 	
+	this->tilesLoadData = levelLoader->getTilesLoadData();
+
+	this->amountFullStatesFINISH = levelLoader->getAmountFullStates();
+
+
+	this->grid = new Grid(window, textureManager, levelANDsize, &font, tilesLoadData, amountFullStatesFINISH);
+	return true;
 }
 
 void GameState::update()

@@ -12,7 +12,7 @@ int main ()
 
         GameManager gameManager;
 
-        while (gameManager.running())
+        while (gameManager.running() and !gameManager.getEndGame())
         {
 
             // Update 

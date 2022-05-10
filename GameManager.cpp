@@ -5,6 +5,7 @@ void GameManager::initVariables()
    this->textureManager = new TextureManager();
    textureManager->inicjalize();
    this->window = nullptr;
+   this->endGame = false;
 }
 void GameManager::initWindow()
 {
@@ -40,7 +41,8 @@ GameManager::GameManager()
     
     initVariables();
     initWindow();
-    states.push(new MenuState(this->window, &states, this->textureManager, event));
+    states.push(new MenuState(this->window, &states, this->textureManager, event, endGame));
+    
    
 }
 GameManager::~GameManager()
@@ -67,13 +69,21 @@ void GameManager::update()
     {
         delete states.top();
         this->states.pop();
+        if (states.empty())
+        {
+            this->endGame = true;
+        }
+
     }
 }
 
 
 void GameManager::render()
 {
-    this->window->clear(sf::Color(215, 237, 209));
-   this->states.top()->render(this->window);
-    this->window->display();
+    if (!endGame)
+    {
+        this->window->clear(sf::Color(215, 237, 209));
+        this->states.top()->render(this->window);
+        this->window->display();
+    }
 }

@@ -5,6 +5,7 @@
 #include "RectangleButton.h"
 #include "CircleButton.h"
 #include "Grid.h"
+#include "loadLevelException.h"
 
 
 class GameState : public State
@@ -20,7 +21,11 @@ class GameState : public State
 	sf::Texture* fullStateSprite;
 	sf::Texture* crossStateSprite;
 
-	
+	LevelLoader* levelLoader;
+
+	std::vector<std::vector<TileLoadData*>>* tilesLoadData;
+	int amountFullStatesFINISH;
+
 	bool endGameState();
 
 	//states
@@ -41,6 +46,8 @@ public:
 	GameState(sf::RenderWindow* window, std::stack<State*>* states, TextureManager* textureManager,pair<string,int> levelANDsize);
 	~GameState();
 	
+	bool initialize();
+
 	void update();
 
 	void render(sf::RenderTarget* target);

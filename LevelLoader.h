@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "AllTileData.h"
+#include <regex>
 
 class LevelLoader {
 
@@ -12,14 +13,15 @@ class LevelLoader {
 	int amountFullStates = 0;
 	const int dataPerRow = 5;
 	std::vector<std::vector<TileLoadData*>> tilesLoadData;
-    void load(std::string pathToLevels, std::string level);
+   
 	void loadLevel(std::filesystem::directory_entry element);
+	
 	
 public: 
 
-	LevelLoader(std::string level);
+	LevelLoader();
 	~LevelLoader();
-
+	bool load(std::string level);
 	std::vector<std::vector<TileLoadData*>>* getTilesLoadData();
 
 

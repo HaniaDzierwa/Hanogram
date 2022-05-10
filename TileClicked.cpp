@@ -56,7 +56,6 @@ void TileClicked::setTexture(sf::Texture * texture)
 
 void TileClicked::updateTileState(const sf::Vector2f mousePos, sf::Clock *clock, TileStateSelect tileStateSelect)
 {
-	this->updateHoverState(mousePos);
 
 
 	if (clock->getElapsedTime() > this->timeDelay)
@@ -110,6 +109,8 @@ void TileClicked::updateTileState(const sf::Vector2f mousePos, sf::Clock *clock,
 	}
 
 	}
+
+	this->updateHoverState(mousePos);
 
 }
 
@@ -173,11 +174,11 @@ void TileClicked::render(sf::RenderTarget* target)
 {
 	 target->draw(this->shape);
 
-	 if( tileState== crossState)
+	 if( tileState == crossState)
 	 target->draw(this->sprite);
 
 	 if (tileState == endState)
 	 {
-		 //wait to visual better :))
+		 //wait to visual better :))  // sleep dziala zle 
 	 }
 }
