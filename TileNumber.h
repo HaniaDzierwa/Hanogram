@@ -3,7 +3,12 @@
 
 class TileNumber : public Tile {
 	
-	int number;
+	
+	sf::Text text;
+	sf::Font font;
+
+	void initText();
+	void initFonts();
 	
 public :
 	TileNumber(sf::Vector2f position, int size, int number);

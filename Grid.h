@@ -4,27 +4,35 @@
 #include <iostream>
 
 #include "Tile.h"
-#include "TileClicked.h"
+#include "TileClickable.h"
 #include "TileNumber.h"
 
 #include "TextureManager.h"
 #include "LevelLoader.h"
 #include "GridValidator.h"
 #include "RectangleButton.h"
+#include "CircleButton.h"
+#include "PopUpMistake.h"
+
 
 using namespace std;
 
 class Grid
 {
-	vector<vector<TileClicked*>> tilesClicked; 
-	vector<vector<TileNumber*>> tilesNumber;
+	//tiles
+	vector<vector<TileClickable*>> tilesClickable; 
+	vector<vector<TileNumber*>> tilesWithNumberRow;
+	vector<vector<TileNumber*>> tilesWithNumberColumns;
+
+
 
 	sf::Vector2f gridOffSet;
 
 	int tileSize;
-	int maxNumbers; // max amount of numbers to fill np 
-	int size;   //1 2 4 3  to bedzie ilosc 4 
+	int maxNumbersInRowAndColumns;
+	int size;   
 	
+	//lines 
 	sf::RectangleShape coastlineHorizontal;
 	sf::RectangleShape coastlineVertical;
 
@@ -34,45 +42,79 @@ class Grid
 
 	int boxSize;
 
-	void initTiles();
-	void initLines();
-
-	TextureManager* textureManager;
 	
+	TextureManager* textureManager;
 	GridValidator* gridValidator;
 
 	//clock
 	sf::Clock clock;
-	
+	sf::Time tileClickDelay = sf::seconds(0.3);
+
+
 	std::vector<std::vector<TileLoadData*>>* tilesLoadData;
 	
 	int amountFullStatesNOW = 0;
 	int amountFullStatesFINISH;
 
-	int mistakes;
+	int totalMistakes;
 
 	RectangleButton* fullTileSquare;
 	RectangleButton* amountTilesClickedandToClick;
 
-	sf::Font font;
+	// select state 
+	CircleButton* stateSelectButton;
+	TileStateSelect tileStateSelect;
 
+	//textures
+	sf::Texture* fullStateSprite;
+	sf::Texture* crossStateSprite;
+
+
+	sf::Font font;
 	bool end = false;
 
-public: 
+	bool showPopUp = false;
+	bool wait = false; 
 
-	Grid(sf::RenderWindow* window, TextureManager* textureManager, pair<string, int> levelANDsize, sf::Font *font, std::vector<std::vector<TileLoadData*>>* tilesLoadData,int amountFullStatesFINISH);
-	~Grid();
+	PopUpMistake* popUpMistakeWindow;
 
-	//update
+
+	std::vector<std::vector<int>>* rowsNumbers;
+	std::vector<std::vector<int>>* columnsNumbers;
+
+	//init
+	void initTiles();
+	void initTilesWithNumber();
+	void initTilesClickable();
+	void initLines();
+	void initUI();
 	
+	//update
+	void updatePopUp(const sf::Vector2f mousePos);
+	void updateStateSelect(const sf::Vector2f mousePos);
+	void setTilesStatesToEndState(const sf::Vector2f mousePos);
 	void updateTiles(const sf::Vector2f mousePos, TileStateSelect tileState);
-	void update(const sf::Vector2f mousePos, TileStateSelect tileState);
+	
 
 	//render
 	void renderLines(sf::RenderTarget* target);
 	void renderTilesClicked(sf::RenderTarget* target);
 	void renderTilesNumbers(sf::RenderTarget* target);
+	void renderTilesClickedEND(sf::RenderTarget* target);
+
+
+	int calculateMistakes();
+
+public: 
+
+	Grid(sf::RenderWindow* window, TextureManager* textureManager, pair<string, int> levelANDsize, sf::Font *font, std::vector<std::vector<TileLoadData*>>* tilesLoadData,
+		int amountFullStatesFINISH, int maxAmountOfNumbersGeneral, std::vector<std::vector<int>>* columnsNumbers, std::vector<std::vector<int>>* rowsNumbers);
+	~Grid();
+
+	void update(const sf::Vector2f mousePos);
 	void render(sf::RenderTarget* target);
+
+	bool getEndGame();
 
 
 };

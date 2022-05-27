@@ -38,7 +38,6 @@ void RectangleButton::setTextPosition()
 		this->shape.getPosition().x + (this->shape.getGlobalBounds().width / 2.f) - this->text.getGlobalBounds().width / 2.f,
 		this->shape.getPosition().y + (this->shape.getGlobalBounds().height / 2.f) - this->text.getGlobalBounds().height / 1.f),
 		this->shape.setFillColor(this->unactiveColor);
-
 }
 
 void RectangleButton::setText(std::string text)
@@ -77,10 +76,8 @@ void RectangleButton::update(const sf::Vector2f mousePos)
 	default:
 		this->shape.setFillColor(sf::Color::Red);
 		break;
-
 	}
 }
-
 
 void RectangleButton::render(sf::RenderTarget* target)
 {

@@ -9,9 +9,7 @@ Tile::Tile(sf::Vector2f position, int size)
 	this->outlineColor = sf::Color::Black;
 }
 
-Tile::~Tile()
-{
-}
+Tile::~Tile() {}
 
 
 

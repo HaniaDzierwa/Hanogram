@@ -7,7 +7,6 @@ void State::initFonts()
     {
         std::cout << "ERROR::GAME::INITFONTS::failed to load font!" << "\n";
     }
-
 }
 
 void State::initText()
@@ -16,8 +15,6 @@ void State::initText()
     this->text.setCharacterSize(24);
     this->text.setFillColor(sf::Color::Blue);
     this->text.setString("NULL");
-
-
 }
 
 State::State(sf::RenderWindow *window, std::stack<State*>* states, TextureManager *textureManager)
@@ -29,8 +26,4 @@ State::State(sf::RenderWindow *window, std::stack<State*>* states, TextureManage
     this->textureManager = textureManager;
 }
 
-
- State::~State()
-{
-
-}
+State::~State() {}

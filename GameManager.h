@@ -15,9 +15,6 @@ class GameManager
 	sf::Event event;
 
 
-	//font
-	sf::Font font;
-
 	//if endGame
 	bool endGame;
 

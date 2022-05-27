@@ -1,5 +1,6 @@
 #include "GameState.h"
 #include "invalidRGBvalueExceptionsh.h"
+#include <future>
 
 bool GameState::endGameState()
 {
@@ -13,32 +14,9 @@ void GameState::initButtons()
 		&this->font, "BACK",
 		sf::Color(177, 196, 242), sf::Color::White, sf::Color::Green);
 
-	this->stateSelectButton = new CircleButton(250, 820, 70, 0,
-		&this->font, "",
-		sf::Color::White, sf::Color(180, 180, 180), sf::Color(100, 100, 100));
-	this->stateSelectButton->setTexture(fullStateSprite);
 }
 
-void GameState::updateStateSelect()
-{
 
-	 if (stateSelectButton->isPressed() and clock.getElapsedTime() > time)
-	 {
-		 clock.restart();
-
-		 if (this->tileStateSelect == cross)
-		 {
-			this->stateSelectButton->setTexture(fullStateSprite);
-			 this->tileStateSelect = full;
-		 }
-		 else
-		 {
-			this->stateSelectButton->setTexture(crossStateSprite);
-			 this-> tileStateSelect = cross;
-		 }
-
-	 }
-}
 
 sf::Vector2f GameState::updateMousePos()
 {
@@ -51,7 +29,7 @@ sf::Vector2f GameState::updateMousePos()
 
 void GameState::updateButtons(sf::Vector2f mousePosFloat)
 {
-	this->stateSelectButton->update(mousePosFloat);
+	
 	this->gameBackbutton->update(mousePosFloat);
 
 
@@ -63,37 +41,81 @@ void GameState::updateButtons(sf::Vector2f mousePosFloat)
 	}
 }
 
-GameState::GameState(sf::RenderWindow* window, std::stack<State*>* states, TextureManager *textureManager, std::pair<std::string,int> levelANDsize) : State(window, states,textureManager), levelANDsize(levelANDsize)
+void GameState::initPopUpMotivationQuits()
+{
+
+	PopUpMotivation* popUpMotivation =  new PopUpMotivation(50, 80, &font, "Keep going!", sf::Color(176, 93, 136));
+	this->popUpMotivationsQuots.push_back(popUpMotivation);
+	popUpMotivation = new PopUpMotivation(60, 80, &font, "Excelent!", sf::Color(176, 93, 136));
+	this->popUpMotivationsQuots.push_back(popUpMotivation);
+	popUpMotivation = new PopUpMotivation(50, 80, &font, "You're great!", sf::Color(176, 93, 136));
+	this->popUpMotivationsQuots.push_back(popUpMotivation);
+	popUpMotivation = new PopUpMotivation(50, 80, &font, "Don't stress!", sf::Color(176, 93, 136));
+	this->popUpMotivationsQuots.push_back(popUpMotivation);
+
+}
+
+ void GameState::renderPopUpMotivationBox(sf::RenderTarget* target)
+{
+	 if (this->motivationalPopUpCloak.getElapsedTime() < this->motivationalPopUpInterval) //  opoznienie startu 
+		 return;
+
+	if (!this->motivationalPopUpRenderingFlag)
+	{
+		this->motivationalPopUpRenderingFlag = true;
+		this->motivationalPopUpRenderStartTime = this->motivationalPopUpCloak.getElapsedTime();
+	}
+
+	
+	this->popUpMotivationsQuots[popUpMotivationCounter]->update();
+	this->popUpMotivationsQuots[popUpMotivationCounter]->render(target);
+	
+	
+	if ((this->motivationalPopUpCloak.getElapsedTime() >= this->motivationalPopUpRenderStartTime)
+		and this->popUpMotivationsQuots[popUpMotivationCounter]->ifPopUpMotivationEnd())
+	{
+		this->motivationalPopUpRenderingFlag = false;
+		this->motivationalPopUpCloak.restart();
+
+		this->motivationalPopUpRenderEndTime = this->motivationalPopUpCloak.getElapsedTime();
+		this->popUpMotivationCounter++;
+
+
+		if (this->popUpMotivationCounter == this->popUpMotivationsQuots.size())
+			this->popUpMotivationCounter = 0;
+
+		this->popUpMotivationsQuots[this->popUpMotivationCounter]->setPopUpMotivationEnd(false);
+	}
+
+}
+
+GameState::GameState(sf::RenderWindow* window, std::stack<State*>* states, TextureManager* textureManager, std::pair<std::string, int> levelANDsize) : State(window, states, textureManager), levelANDsize(levelANDsize)
 {
 	this->states = states;
 	this->textureManager = textureManager;
 
-	this->fullStateSprite = textureManager->getTexture("fullState");
-	this->crossStateSprite = textureManager->getTexture("crossState");
-
 	initButtons();
 
 	this->levelANDsize = levelANDsize;
-
-	// loading grid 
 	this->levelLoader = new LevelLoader();
-	this->tileStateSelect = full;
-	
-	
 
-
+	this->initPopUpMotivationQuits();
 }
 
 
 GameState::~GameState()
 {
-	delete this->stateSelectButton;
 	delete this->gameBackbutton;
 	delete this->grid;
 	delete this->levelLoader;
+
+	for (int i = 0; i < this->popUpMotivationsQuots.size(); i++)
+	{
+		delete this->popUpMotivationsQuots[i];
+	}
+	popUpMotivationsQuots.clear();
 }
 
-//albo to returnuje boola, albo sobie flage ustawiamy
 bool GameState::initialize()
 {
 	try 
@@ -107,31 +129,30 @@ bool GameState::initialize()
 	}
 
 
-	
 	this->tilesLoadData = levelLoader->getTilesLoadData();
-
 	this->amountFullStatesFINISH = levelLoader->getAmountFullStates();
+	this->maxAmountOfNumbersGeneral = levelLoader->getMaxAmountOfNumberGeneral();
+	this->columnsNumbers = levelLoader->getColumnsNumbers();
+	this->rowsNumbers = levelLoader->getRowsNumbers();
 
-
-	this->grid = new Grid(window, textureManager, levelANDsize, &font, tilesLoadData, amountFullStatesFINISH);
+	this->grid = new Grid(window, textureManager, levelANDsize, &font, tilesLoadData, 
+		amountFullStatesFINISH, maxAmountOfNumbersGeneral, columnsNumbers,rowsNumbers);
 	return true;
 }
 
 void GameState::update()
 {
 	auto mousePosFloat = updateMousePos();
-	this->grid->update(mousePosFloat,tileStateSelect);
-	this->updateStateSelect();
-	this->text.setString("Game");
+	this->grid->update(mousePosFloat);
 	this->updateButtons(mousePosFloat);
-
 }
 
 void GameState::render(sf::RenderTarget* target)
 {
-	this->grid->render(window);
-	this->stateSelectButton->render(window);
-	this->gameBackbutton->render(window);
-	
+	this->grid->render(target);
+	this->gameBackbutton->render(target);
+
+	if(!this->popUpMotivationsQuots[popUpMotivationCounter]->ifPopUpMotivationEnd() and  grid->getEndGame()==false)
+	this->renderPopUpMotivationBox(target);
 	
 }

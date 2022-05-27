@@ -5,7 +5,7 @@
 class CircleButton : public Button
 {
 
-	sf::CircleShape shape; // w mianState przy incjacji zmieniam dodatkowe rzeczy, albo zrobic getShape albo zostawic 
+	sf::CircleShape shape;  
 
 public :
 

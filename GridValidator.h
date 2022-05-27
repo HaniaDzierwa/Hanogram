@@ -3,7 +3,8 @@
 #include <vector>
 #include "AllTileData.h"
 #include <iostream>
-#include "TileClicked.h"
+#include "TileClickable.h"
+#include <future>
 
 // check bool table for game 
 class GridValidator
@@ -16,6 +17,6 @@ public:
 	GridValidator(std::vector<std::vector<TileLoadData*>>* tilesLoadData,int size);
 	~GridValidator();
 
-	int searchForMistakes(std::vector<std::vector<TileClicked*>>* tilesClicked );
+	void searchForMistakes(std::vector<std::vector<TileClickable*>>* tilesClicked, int first, int last, std::promise<int>& pr);
 
 };

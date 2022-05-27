@@ -21,7 +21,7 @@ public:
 	//get Texture by name 
 	sf::Texture* getTexture(std::string name);
 
-	std::string createName(std::string fileName);
+	std::string createTextureName(std::string fileName);
 	void loadAllTextures( std::string path);
 	
 

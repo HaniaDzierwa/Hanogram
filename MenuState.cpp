@@ -11,7 +11,6 @@ bool MenuState::getSelectLevelButtonIsPressed()
 	return selectLevelButton->isPressed();
 }
 
-
 bool MenuState::endGameState()
 {
 	return endGame;
@@ -19,7 +18,6 @@ bool MenuState::endGameState()
 
 pair<string,int> MenuState::updateLevel()
 {
-	
 	if (getSelectLevelButtonIsPressed() and clock.getElapsedTime() > this->time)
 	{
 		showLevelTextBox->setText(it->first);
@@ -27,16 +25,13 @@ pair<string,int> MenuState::updateLevel()
 		toReturn = make_pair(it->first, it->second);
 		it++;
 		clock.restart();
-
 	}
 		
 	if (it == levelANDsizeAll.end())
-		{
-			it = levelANDsizeAll.begin();
-		}
-		
+	{
+		it = levelANDsizeAll.begin();
+	}	
     return toReturn;
-	
 }
 
 
@@ -97,6 +92,7 @@ MenuState::MenuState(sf::RenderWindow* window, std::stack<State*>* states, Textu
 	this->states = states;
 	this->textureManager = textureManager;
 	this->endGame = endGame;
+
 	initVariables();
 	initButtons();
 	initLevel();
@@ -127,19 +123,18 @@ void MenuState::update()
 
 	if (gameStartButton->isPressed())
 	{
-		std::cout << "weszlismy\n";
+		std::cout << "Loading gameState...\n";
 		GameState* gameState = new GameState(this->window, this->states, this->textureManager, this->levelANDsize);
 		if (!gameState->initialize())
 		{
 			delete gameState;
+			std::cout << "Can't load gameState\n";
 			return;
 		}
 
 		this->states->push(gameState);
-		
-	
+		std::cout << "Loaded gameState\n";
 	}
-
 }
 
 void  MenuState::render(sf::RenderTarget* target)
@@ -153,6 +148,3 @@ void  MenuState::render(sf::RenderTarget* target)
 	this->gameStartButton->render(window);
 	this->selectLevelButton->render(window);
 }
-
-
-

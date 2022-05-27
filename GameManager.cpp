@@ -12,7 +12,7 @@ void GameManager::initWindow()
     this->videoMode.height = 1000;
     this->videoMode.width = 800;
     this->window = new sf::RenderWindow(this->videoMode, "Hanogram", sf::Style::Titlebar | sf::Style::Close); // widht and hight 
-    this->window->setFramerateLimit(100);
+    this->window->setFramerateLimit(60);
     this->window->setKeyRepeatEnabled(false);
 }
 
@@ -42,6 +42,7 @@ GameManager::GameManager()
     initVariables();
     initWindow();
     states.push(new MenuState(this->window, &states, this->textureManager, event, endGame));
+    
     
    
 }

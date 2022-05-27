@@ -14,9 +14,7 @@ GridValidator::GridValidator(std::vector<std::vector<TileLoadData*>>* tilesLoadD
 			this->truthTable[i][j] = (*tilesLoadData)[i][j]->endState;
 		}
 	}
-
-
-	std::cout << "zaladowana tablica prawdy\n";
+	std::cout << "Loaded truth table\n";
 
 }
 	
@@ -29,10 +27,12 @@ GridValidator::~GridValidator()
 	truthTable = NULL;
 }
 
-int GridValidator::searchForMistakes(std::vector<std::vector<TileClicked*>>* tilesClicked)
+void GridValidator::searchForMistakes(std::vector<std::vector<TileClickable*>>* tilesClicked, int first, int last, std::promise<int>& pr )
 {
 	bool stateTilesClicked= 0;
     int mistake = 0;
+
+	//debbug bool table
 	/*for (int i = 0; i < size; i++)
 	{
 
@@ -47,7 +47,7 @@ int GridValidator::searchForMistakes(std::vector<std::vector<TileClicked*>>* til
 	std::cout << "\n";*/
 
 
-	for (int i = 0; i < size; i++)
+	for (int i = first; i < last; i++)
 	{
 		for (int j = 0; j < size; j++)
 		{
@@ -61,8 +61,7 @@ int GridValidator::searchForMistakes(std::vector<std::vector<TileClicked*>>* til
 			
 		}
 	}
-
-	return mistake;
+	pr.set_value(mistake);
 }
 
 

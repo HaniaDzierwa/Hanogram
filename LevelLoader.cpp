@@ -20,7 +20,22 @@ LevelLoader::~LevelLoader()
 
 std::vector<std::vector<TileLoadData*>>* LevelLoader::getTilesLoadData()
 {
-	return &(tilesLoadData);
+	return &(this->tilesLoadData);
+}
+
+int LevelLoader::getMaxAmountOfNumberGeneral()
+{
+	return this->maxAmountOfNumbersGeneral;
+}
+
+std::vector<std::vector<int>>* LevelLoader::getRowsNumbers()
+{
+	return &(this->rowsNumbers);
+}
+
+std::vector<std::vector<int>>* LevelLoader::getColumnsNumbers()
+{
+	return &(this->columnsNumbers);
 }
 
 int LevelLoader::getAmountFullStates()
@@ -42,13 +57,13 @@ bool LevelLoader::load( std::string level)
 
 
 					//todo 
-					//losowo wybierany plik o rozszerzeniu .txt preferowany krzys.txt
+					//losowo wybierany plik o rozszerzeniu .txt 
 				{
 					try 
 					{ 
 						loadLevel(element);
 					}
-					catch (invalidRGBvalueExcepions e) // usun to co juz zostalo stworzone bo jest wyciek
+					catch (invalidRGBvalueExcepions e)
 					{
 						
 						throw;
@@ -79,25 +94,20 @@ void  LevelLoader::loadLevel(std::filesystem::directory_entry element)
 	int variables[5] = { 0 };
 	int currentVal = 0;
 	int size = 0;
-	 
-	
+	int i = 0;
+	int j = 0;
+
    std::regex reg("^([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])$");
 
 	file >> size; 
 
-	int i = 0;
-	int j = 0;
-
 	for (int i = 0; i < size; i++)
 	{
 		std::vector<TileLoadData*> vec;
-
 		for (int j = 0; j < size*dataPerRow; j++)
 		{
 			file >> currentVal;
-			
-			
-			if(!(std::regex_match(std::to_string(currentVal), reg))) //works 
+			if(!(std::regex_match(std::to_string(currentVal), reg)))  
 			{
 				file.close();
 				int position = i * size + vec.size() +1 ; // ustalenie numeru wiersza
@@ -110,19 +120,43 @@ void  LevelLoader::loadLevel(std::filesystem::directory_entry element)
 			counter++;
 
 			if (counter == dataPerRow)
-			{
+			{ 
 				counter = 0;
 				sf::Color color(variables[0], variables[1], variables[2]);
 				vec.push_back(new TileLoadData(color, (bool) variables[3], (bool)variables[4]));
 			}
-	
 		}
 		this->tilesLoadData.push_back(vec);
 	}
 
 	file >> amountFullStates;
-	file.close();
+	file >> maxAmountOfNumbersGeneral;
 	
+	for (int i = 0; i < size; i++)
+	{
+		std::vector<int> numbers;
+		for (int j = 0; j < maxAmountOfNumbersGeneral; j++)
+		{
+			int number;
+			file >> number;
+			numbers.push_back(number);
+		}
+		rowsNumbers.push_back(numbers);
+	}
+
+	for (int i = 0; i < size; i++)
+	{
+		std::vector<int> numbers;
+		for (int j = 0; j < maxAmountOfNumbersGeneral;j++)
+		{
+			int number;
+			file >> number;
+			numbers.push_back(number);
+		}
+		columnsNumbers.push_back(numbers);
+	}
+	
+	file.close();
 }
 
 
