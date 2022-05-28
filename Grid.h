@@ -31,6 +31,7 @@ class Grid
 	int tileSize;
 	int maxNumbersInRowAndColumns;
 	int size;   
+	int tableSize;
 	
 	//lines 
 	sf::RectangleShape coastlineHorizontal;

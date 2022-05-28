@@ -112,6 +112,7 @@ Grid::Grid(sf::RenderWindow* window, TextureManager* textureManager, pair<string
 	tileSize = AllTileData::tileSize / this->size;
 	this->gridOffSet = sf::Vector2f((window->getSize().x - this->size * this->tileSize) / 2, (window->getSize().y - this->size * this->tileSize) / 2);
 
+	this->tableSize = levelANDsize.second;
 	this->boxSize = AllTileData::boxSize;
 
 	this->gridValidator = new GridValidator(this->tilesLoadData, levelANDsize.second);
@@ -251,14 +252,14 @@ void Grid::updatePopUp(const sf::Vector2f mousePos)
 
 int Grid::calculateMistakes()
 {
-	int arraySizeForThreadOne = this->size / 2;
-	int arraySizeForThreadSecond = this->size - arraySizeForThreadOne;
+	int arraySizeForThreadOne = this->tableSize / 2;
+	int arraySizeForThreadSecond = this->tableSize - arraySizeForThreadOne;
 	std::promise<int> amountOfMistakesFromThreadOne, amountOfMistakesFromThreadSecond;
 
 	std::thread threadOne(&GridValidator::searchForMistakes, gridValidator, &this->tilesClickable,
 		0, (arraySizeForThreadOne), ref(amountOfMistakesFromThreadOne));
 	std::thread threadTwo(&GridValidator::searchForMistakes, gridValidator, &this->tilesClickable,
-		(arraySizeForThreadOne), (arraySizeForThreadSecond), ref(amountOfMistakesFromThreadSecond));
+		(arraySizeForThreadSecond), (this->tableSize), ref(amountOfMistakesFromThreadSecond));
 
 	this->totalMistakes =
 		amountOfMistakesFromThreadOne.get_future().get() +
